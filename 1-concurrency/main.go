@@ -18,8 +18,12 @@ func main() {
 }
 
 func generate_random_n_to_chan(c chan int) {
+	r_ints := make([]int, 10)
 	for i := 0; i < 10; i++ {
-		c <- rand.Intn(101)
+		r_ints[i] = rand.Intn(101)
+	}
+	for i := 0; i < 10; i++ {
+		c <- r_ints[i]
 	}
 }
 
