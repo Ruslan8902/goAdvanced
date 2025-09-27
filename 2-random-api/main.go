@@ -7,7 +7,7 @@ import (
 )
 
 func getRandomN(w http.ResponseWriter, req *http.Request) {
-	fmt.Println(rand.Intn(6) + 1)
+	fmt.Fprintf(w, "%d", rand.Intn(6)+1)
 }
 
 func main() {
