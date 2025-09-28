@@ -19,12 +19,18 @@ func NewVerifyHandler(router *http.ServeMux) {
 
 func (handler *VerifyHandler) Send() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+		user := EmailStruct{
+			Email:    "test@gmail.com",
+			Password: "password123",
+			Address:  "smtp.gmail.com",
+		}
 		e := email.NewEmail()
 		e.From = "Jordan Wright <test@gmail.com>"
+		e.To = []string{user.Email}
 		e.Subject = "Awesome Subject"
 		e.Text = []byte("Text Body is, of course, supported!")
 		e.HTML = []byte("<h1>Fancy HTML is supported, too!</h1>")
-		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "test@gmail.com", "password123", "smtp.gmail.com"))
+		e.Send("smtp.gmail.com:587", smtp.PlainAuth("", user.Email, user.Password, user.Address))
 	}
 }
 
