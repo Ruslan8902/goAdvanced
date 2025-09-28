@@ -1,0 +1,35 @@
+package main
+
+import (
+	"fmt"
+	"math/rand"
+)
+
+func main() {
+	ch_1 := make(chan int)
+	ch_2 := make(chan int)
+	go generate_random_n_to_chan(ch_1)
+	go pow_two_of_n_from_chan_to_chan(ch_1, ch_2)
+
+	for i := 0; i < 10; i++ {
+		n := <-ch_2
+		fmt.Print(n, " ")
+	}
+}
+
+func generate_random_n_to_chan(c chan int) {
+	r_ints := make([]int, 10)
+	for i := 0; i < 10; i++ {
+		r_ints[i] = rand.Intn(101)
+	}
+	for i := 0; i < 10; i++ {
+		c <- r_ints[i]
+	}
+}
+
+func pow_two_of_n_from_chan_to_chan(c_from chan int, c_to chan int) {
+	for i := 0; i < 10; i++ {
+		n := <-c_from
+		c_to <- (n * n)
+	}
+}
