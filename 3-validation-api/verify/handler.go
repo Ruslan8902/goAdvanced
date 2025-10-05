@@ -55,13 +55,16 @@ func (handler *VerifyHandler) Send(ec *VerifyHandlerDeps) http.HandlerFunc {
 
 		e := email.NewEmail()
 		e.From = fmt.Sprintf("Ruslan Araslanov <%s>", ec.EmailConfig.Email)
-		e.To = []string{ec.EmailConfig.Email}
+		e.To = []string{body.Email}
 		e.Subject = "Random Hash"
 		e.HTML = []byte(fmt.Sprintf("<a href='http://localhost:8081/verify/%s'>http://localhost:8081/verify/%s</a>", hash, hash))
 		err = e.Send("smtp.mail.ru:465", smtp.PlainAuth("", ec.EmailConfig.Email, ec.EmailConfig.Password, ec.EmailConfig.Address))
 		if err != nil {
 			fmt.Print("Ошибка при отправке письма")
+			res.Json(w, "Failed to send verificztion email", 500)
 		}
+		res.Json(w, "Hash created", 201)
+
 	}
 }
 
@@ -72,17 +75,22 @@ func (handler *VerifyHandler) Verify() http.HandlerFunc {
 		emailHashListWithDb := NewBinListWithDb(db)
 
 		var found bool
-		for _, hm := range emailHashListWithDb.EmailHashs {
+		var foundIdx int
+		for idx, hm := range emailHashListWithDb.EmailHashs {
 			if hm.Hash == hashString {
 				found = true
+				foundIdx = idx
 				break
 			}
 		}
 
 		if !found {
-			res.Json(w, "Not found", 404)
+			res.Json(w, found, 404)
 		} else {
-			res.Json(w, "Found", 200)
+			emailHashListWithDb.EmailHashs = append(emailHashListWithDb.EmailHashs[:foundIdx], emailHashListWithDb.EmailHashs[foundIdx+1:]...)
+			content, _ := json.Marshal(emailHashListWithDb.EmailHashs)
+			emailHashListWithDb.Db.WriteStorage(content)
+			res.Json(w, found, 200)
 		}
 	}
 }
