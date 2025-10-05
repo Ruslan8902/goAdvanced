@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"goAdvancedAPI/configs"
 	"goAdvancedAPI/pkg/req"
+	"goAdvancedAPI/pkg/res"
 	"math/rand"
 	"net/http"
 
@@ -53,14 +54,35 @@ func (handler *VerifyHandler) Send(ec *VerifyHandlerDeps) http.HandlerFunc {
 		emailHashListWithDb.Db.WriteStorage(content)
 
 		e := email.NewEmail()
-		e.From = "Ruslan Araslanov <casio-ruslan-1996@mail.ru>"
+		e.From = fmt.Sprintf("Ruslan Araslanov <%s>", ec.EmailConfig.Email)
 		e.To = []string{ec.EmailConfig.Email}
 		e.Subject = "Random Hash"
 		e.HTML = []byte(fmt.Sprintf("<a href='http://localhost:8081/verify/%s'>http://localhost:8081/verify/%s</a>", hash, hash))
-		e.Send("smtp.mail.ru:465", smtp.PlainAuth("", ec.EmailConfig.Email, ec.EmailConfig.Password, ec.EmailConfig.Address))
+		err = e.Send("smtp.mail.ru:465", smtp.PlainAuth("", ec.EmailConfig.Email, ec.EmailConfig.Password, ec.EmailConfig.Address))
+		if err != nil {
+			fmt.Print("Ошибка при отправке письма")
+		}
 	}
 }
 
 func (handler *VerifyHandler) Verify() http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {}
+	return func(w http.ResponseWriter, r *http.Request) {
+		hashString := r.PathValue("hash")
+		db := NewStorage("data.json")
+		emailHashListWithDb := NewBinListWithDb(db)
+
+		var found bool
+		for _, hm := range emailHashListWithDb.EmailHashs {
+			if hm.Hash == hashString {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			res.Json(w, "Not found", 404)
+		} else {
+			res.Json(w, "Found", 200)
+		}
+	}
 }
