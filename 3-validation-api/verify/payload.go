@@ -1,7 +1,5 @@
 package verify
 
-type EmailStruct struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Address  string `json:"address"`
+type SendRequestStruct struct {
+	Email string `json:"email" validate:"required,email"`
 }
