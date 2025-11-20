@@ -1,4 +1,4 @@
-package main
+package migrations
 
 import (
 	"orderApiStart/internal/product"
@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func main() {
+func AutoMigrate() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)

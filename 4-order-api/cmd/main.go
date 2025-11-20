@@ -6,12 +6,15 @@ import (
 	"orderApiStart/configs"
 	"orderApiStart/internal/product"
 	"orderApiStart/middleware"
+	"orderApiStart/migrations"
 	"orderApiStart/pkg/db"
 )
 
 func App() http.Handler {
 	conf := configs.LoadConfig()
 	db := db.NewDb(conf)
+	migrations.AutoMigrate()
+
 	router := http.NewServeMux()
 
 	productRepository := product.NewProductRepository(db)
