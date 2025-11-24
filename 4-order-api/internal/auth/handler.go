@@ -24,8 +24,9 @@ type AuthHandler struct {
 
 func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 	handler := &AuthHandler{
-		Config:         deps.Config,
-		UserRepository: deps.UserRepository,
+		Config:            deps.Config,
+		UserRepository:    deps.UserRepository,
+		SessionRepository: deps.SessionRepository,
 	}
 	router.HandleFunc("POST /auth/login", handler.LoginRequest())
 	router.HandleFunc("POST /auth/confirm-login", handler.LoginConfirm())

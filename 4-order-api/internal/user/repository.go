@@ -10,7 +10,7 @@ type UserRepository struct {
 	Database *db.Db
 }
 
-func NewUsetRepository(database *db.Db) *UserRepository {
+func NewUserRepository(database *db.Db) *UserRepository {
 	return &UserRepository{
 		Database: database,
 	}
@@ -51,7 +51,7 @@ func (repo *UserRepository) GetById(id uint) (*User, error) {
 
 func (repo *UserRepository) GetByPhone(phone string) (*User, error) {
 	var user User
-	result := repo.Database.DB.First(&user, phone)
+	result := repo.Database.DB.First(&user, "Phone = ?", phone)
 	if result.Error != nil {
 		return nil, result.Error
 	}

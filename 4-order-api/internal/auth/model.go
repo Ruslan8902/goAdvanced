@@ -28,7 +28,7 @@ func (session *Session) GenerateSessionID() {
 }
 
 func (session *Session) GenerateConfirmationCode() {
-	session.SessionID = RandStringRunes(16, digitRunes)
+	session.ConfirmationCode = RandStringRunes(16, digitRunes)
 }
 
 var symbolsRunes = []rune("abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPRSTUVWXYZ0123456789")
