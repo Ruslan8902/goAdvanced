@@ -3,6 +3,7 @@ package product
 import (
 	"net/http"
 	"orderApiStart/configs"
+	"orderApiStart/middleware"
 	"orderApiStart/pkg/req"
 	"orderApiStart/pkg/res"
 	"strconv"
@@ -24,10 +25,10 @@ func NewProductHandler(router *http.ServeMux, deps ProductHandlerDeps) {
 		ProductRepository: deps.ProductRepository,
 	}
 
-	router.Handle("POST /product", handler.Create())
-	router.Handle("PATCH /product/{id}", handler.Update())
-	router.Handle("DELETE /product/{id}", handler.Delete())
-	router.HandleFunc("GET /product/{id}", handler.Get())
+	router.Handle("POST /product", middleware.IsAuthed(handler.Create(), deps.Config))
+	router.Handle("PATCH /product/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
+	router.Handle("DELETE /product/{id}", middleware.IsAuthed(handler.Delete(), deps.Config))
+	router.Handle("GET /product/{id}", middleware.IsAuthed(handler.Get(), deps.Config))
 }
 
 func (handler *ProductHandler) Create() http.HandlerFunc {

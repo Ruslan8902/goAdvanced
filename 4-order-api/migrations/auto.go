@@ -1,8 +1,10 @@
 package migrations
 
 import (
+	"orderApiStart/internal/auth"
 	"orderApiStart/internal/product"
 	"os"
+	"os/user"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -18,5 +20,5 @@ func AutoMigrate() {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&product.Product{})
+	db.AutoMigrate(&product.Product{}, &auth.Session{}, &user.User{})
 }
