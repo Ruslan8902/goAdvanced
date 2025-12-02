@@ -13,3 +13,7 @@ type ProductUpdateRequest struct {
 	Description string         `json:"description"`
 	Images      pq.StringArray `json:"images"`
 }
+
+type OrderCreateRequest struct {
+	Products []Product `json:"products"`
+}
