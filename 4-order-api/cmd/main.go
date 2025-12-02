@@ -22,10 +22,16 @@ func App() http.Handler {
 	productRepository := product.NewProductRepository(db)
 	sesseionRepository := auth.NewSessionRepository(db)
 	userRepository := user.NewUserRepository(db)
+	orderRepository := product.NewOrderRepository(db)
 
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,
 		Config:            conf,
+	})
+
+	product.NewOrderHandler(router, product.OrderHandlerDeps{
+		OrderRepository: orderRepository,
+		Config:          conf,
 	})
 
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{

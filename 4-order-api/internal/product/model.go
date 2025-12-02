@@ -11,6 +11,21 @@ type Product struct {
 	Name        string         `json:"name"`
 	Description string         `json:"description"`
 	Images      pq.StringArray `json:"images"`
+	Order       []Order        `gorm:"many2many:order_product;"`
+}
+
+type Order struct {
+	gorm.Model
+	UserID   uint      `json:"userId"`
+	Products []Product `gorm:"many2many:order_product;"`
+}
+
+func NewOrder(userId uint, products []Product) *Order {
+	order := &Order{
+		UserID:   userId,
+		Products: products,
+	}
+	return order
 }
 
 func NewProduct(name, description string) *Product {

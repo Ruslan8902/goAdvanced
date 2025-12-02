@@ -20,5 +20,5 @@ func AutoMigrate() {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&product.Product{}, &auth.Session{}, &user.User{})
+	db.AutoMigrate(&product.Product{}, &auth.Session{}, &user.User{}, &product.Order{})
 }
