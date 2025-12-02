@@ -22,7 +22,7 @@ func (repo *OrderRepository) Create(order *Order) (*Order, error) {
 
 func (repo *OrderRepository) GetByOrderId(userId uint, orderId uint) (*[]Order, error) {
 	var orders []Order
-	result := repo.Database.DB.Find(&orders, "UserID = ? AND OrderID = ?", userId, orderId)
+	result := repo.Database.DB.Find(&orders, "UserID = ? AND ID = ?", userId, orderId)
 	if result.Error != nil {
 		return nil, result.Error
 	}

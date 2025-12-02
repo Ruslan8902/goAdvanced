@@ -34,7 +34,13 @@ func (handler *OrderHandler) Create() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		order := &Order{UserID: body.UserID,
+
+		userId, ok := r.Context().Value(middleware.ContextUserIDKey).(uint)
+		if !ok {
+			http.Error(w, "Not authorized", http.StatusUnauthorized)
+			return
+		}
+		order := &Order{UserID: userId,
 			Products: body.Products,
 		}
 
