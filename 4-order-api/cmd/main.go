@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"orderApiStart/configs"
+	"orderApiStart/internal/auth"
 	"orderApiStart/internal/product"
+	"orderApiStart/internal/user"
 	"orderApiStart/middleware"
 	"orderApiStart/migrations"
 	"orderApiStart/pkg/db"
@@ -18,11 +20,20 @@ func App() http.Handler {
 	router := http.NewServeMux()
 
 	productRepository := product.NewProductRepository(db)
+	sesseionRepository := auth.NewSessionRepository(db)
+	userRepository := user.NewUserRepository(db)
 
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,
 		Config:            conf,
 	})
+
+	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
+		SessionRepository: sesseionRepository,
+		UserRepository:    userRepository,
+		Config:            conf,
+	})
+
 	return middleware.Logging(router)
 }
 
